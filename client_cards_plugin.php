@@ -74,7 +74,9 @@ class ClientCardsPlugin extends Plugin
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.services',
                 'background' => '#FCF8E3',
-                'background_type' => 'color'
+                'background_type' => 'color',
+                'link' => 'services/index/active/',
+                'enabled' => 1
             ],
             [
                 'level' => 'client',
@@ -82,7 +84,9 @@ class ClientCardsPlugin extends Plugin
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.invoices',
                 'background' => '#DFF0D8',
-                'background_type' => 'color'
+                'background_type' => 'color',
+                'link' => 'invoices/index/open/',
+                'enabled' => 1
             ]
         ];
     }
