@@ -18,6 +18,8 @@ class ClientCardsPlugin extends Plugin
         Language::loadLang('client_cards_plugin', null, dirname(__FILE__) . DS . 'language' . DS);
 
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
+
+        $this->client_uri = WEBDIR . Configure::get('Route.client') . '/';
     }
 
     /**
@@ -75,7 +77,7 @@ class ClientCardsPlugin extends Plugin
                 'label' => 'ClientCardsPlugin.card_client.services',
                 'background' => '#FCF8E3',
                 'background_type' => 'color',
-                'link' => 'services/index/active/',
+                'link' => ltrim($this->client_uri, '/') . 'services/index/active/',
                 'enabled' => 1
             ],
             [
@@ -85,7 +87,7 @@ class ClientCardsPlugin extends Plugin
                 'label' => 'ClientCardsPlugin.card_client.invoices',
                 'background' => '#DFF0D8',
                 'background_type' => 'color',
-                'link' => 'invoices/index/open/',
+                'link' => ltrim($this->client_uri, '/') . 'invoices/index/open/',
                 'enabled' => 1
             ]
         ];
