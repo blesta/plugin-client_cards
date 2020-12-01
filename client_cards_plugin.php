@@ -75,7 +75,8 @@ class ClientCardsPlugin extends Plugin
                 'callback' => ['this', 'getServicesCount'],
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.services',
-                'background' => '#FCF8E3',
+                'text_color' => '#ffffff',
+                'background' => '#ffc107',
                 'background_type' => 'color',
                 'link' => $this->client_uri . 'services/index/active/',
                 'enabled' => 1
@@ -85,7 +86,8 @@ class ClientCardsPlugin extends Plugin
                 'callback' => ['this', 'getInvoicesCount'],
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.invoices',
-                'background' => '#DFF0D8',
+                'text_color' => '#ffffff',
+                'background' => '#28a745',
                 'background_type' => 'color',
                 'link' => $this->client_uri . 'invoices/index/open/',
                 'enabled' => 1
