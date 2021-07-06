@@ -28,10 +28,16 @@ class ClientCardsPlugin extends Plugin
      */
     public function getServicesCount($client_id)
     {
-        Loader::loadModels($this, ['Services']);
+        Loader::loadModels($this, ['Services', 'PluginManager']);
 
-        return $this->Services->getListCount($client_id, 'active')
-            + $this->Services->getListCount($client_id, 'suspended');
+        // Exclude domains, if the domain manager plugin is installed
+        $filters = [];
+        if ($this->PluginManager->isInstalled('domains', Configure::get('Blesta.company_id'))) {
+            $filters['type'] = 'services';
+        }
+
+        return $this->Services->getListCount($client_id, 'active', false, null, $filters)
+            + $this->Services->getListCount($client_id, 'suspended', false, null, $filters);
     }
 
     /**
