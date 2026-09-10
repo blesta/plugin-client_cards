@@ -21,6 +21,55 @@ class ClientCardsPlugin extends Plugin
     }
 
     /**
+     * Performs migration of data from $current_version (the current installed version)
+     * to the given file set version
+     *
+     * @param string $current_version The current installed version of this plugin
+     * @param int $plugin_id The ID of the plugin being upgraded
+     */
+    public function upgrade($current_version, $plugin_id)
+    {
+        if (!isset($this->Record)) {
+            Loader::loadComponents($this, ['Record']);
+        }
+
+        // Upgrade to 1.3.0
+        if (version_compare($current_version, '1.3.0', '<')) {
+            $this->updateCardColors();
+        }
+    }
+
+    /**
+     * Updates the default card background colors to match the Meridian palette
+     * (services -> primary blue, invoices -> warning amber). Only cards still using the
+     * previous default colors are updated, preserving any admin customizations.
+     */
+    private function updateCardColors()
+    {
+        // Map the previous default backgrounds to the new Meridian palette
+        $colors = ['#ffc107' => '#2563eb', '#28a746' => '#d97706'];
+
+        // Gather this plugin's instances across all companies
+        $plugins = $this->Record->select(['id'])
+            ->from('plugins')
+            ->where('dir', '=', 'client_cards')
+            ->fetchAll();
+        $plugin_ids = array_map(function ($plugin) {
+            return $plugin->id;
+        }, $plugins);
+
+        if (empty($plugin_ids)) {
+            return;
+        }
+
+        foreach ($colors as $from => $to) {
+            $this->Record->where('plugin_id', 'in', $plugin_ids)
+                ->where('background', '=', $from)
+                ->update('plugin_cards', ['background' => $to]);
+        }
+    }
+
+    /**
      * Retrieves the total number of active and suspended services
      *
      * @param int $client_id The ID of the client assigned to the services
@@ -79,9 +128,10 @@ class ClientCardsPlugin extends Plugin
                 'callback' => ['this', 'getServicesCount'],
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.services',
-                'text_color' => '#fffaeb',
-                'background' => '#ffc107',
+                'text_color' => '#ffffff',
+                'background' => '#2563eb',
                 'background_type' => 'color',
+                'icon' => 'bi bi-hdd-stack',
                 'link' => 'services/index/active/',
                 'enabled' => 1
             ],
@@ -90,9 +140,10 @@ class ClientCardsPlugin extends Plugin
                 'callback' => ['this', 'getInvoicesCount'],
                 'callback_type' => 'value',
                 'label' => 'ClientCardsPlugin.card_client.invoices',
-                'text_color' => '#e4f5e7',
-                'background' => '#28a746',
+                'text_color' => '#ffffff',
+                'background' => '#d97706',
                 'background_type' => 'color',
+                'icon' => 'bi bi-receipt',
                 'link' => 'invoices/index/open/',
                 'enabled' => 1
             ]
